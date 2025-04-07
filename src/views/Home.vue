@@ -6,8 +6,7 @@
 
 
 <script>
-import NavBar from '@/components/NavBar';
-
+import NavBar from '@/components/NavBar.vue';
 
 </script>
 <style scoped>

@@ -1,6 +1,11 @@
 <template>
     <button>
-        <router-view link-></router-view>
+        <router-link to="/discussions">
+            <button>All Discussions</button>
+        </router-link>
+        <router-link to="/new-discussion">
+            <button>Create New Discussion</button>
+        </router-link>
     </button>
 
 </template>
