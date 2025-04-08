@@ -39,14 +39,16 @@
   }
   
   .logo {
-    margin-left: -80px;
+    margin-left: 10px;
     margin-right: auto;
   }
   
   img {
-    height: 20%;
-    width: 50%;
-    margin-left: -80px;
+    max-height: 20%;
+    max-width: 30%;
+    height: auto;
+    width: auto;
+    margin-left: 10px;
   }
   
   .nav-links {
@@ -56,7 +58,7 @@
     gap: 20px;
     margin-right: 20px;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 20px;
   }
   
   .nav-button {
