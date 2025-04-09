@@ -40,8 +40,8 @@
   
   <script>
 import { RouterLink } from 'vue-router';
-
-
+import { auth, registration } from '../firebase-config'
+ 
   export default {
     name: 'signup',
     components: {
