@@ -8,13 +8,13 @@
                 <label>
                     USERNAME
                 </label>
-                <input type="text">
+                <input type="text" v-model="username">
             </div>
             <div>
                 <label>
                     PASSWORD
                 </label>
-                <input type="password">
+                <input type="password" v-model="password">
             </div>
             <button>SIGN IN</button>
         </form>
@@ -28,6 +28,12 @@
     name: 'login',
     components: {
       
+    },
+    data(){
+        return{
+            username: '',
+            password: '',
+        }
     }
   }
   </script>
