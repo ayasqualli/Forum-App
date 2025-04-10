@@ -2,11 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
-
-
+import DiscussionDetail from '@/components/DiscussionDetail.vue'
+import DiscussionList from '@/components/DiscussionList.vue'
 const routes = [
   {
-    path: '/',
+    path: '/all',
+    name: 'Discussionlist',
+    component: DiscussionList,
+  },
+  {
+    path: '/detail/:id', // :id est un paramètre dynamique
+    name: 'DiscussionDetail',
+    component: DiscussionDetail,
+  },
+  {  path: "/",
     name: 'home',
     component: Home
   },
@@ -20,7 +29,6 @@ const routes = [
     name: 'signup',
     component: SignupView
   }
-
 ]
 
 const router = createRouter({
