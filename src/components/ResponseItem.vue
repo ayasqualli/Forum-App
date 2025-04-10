@@ -10,7 +10,7 @@
 import { db } from '../firebase-config'; 
 export default{
     props : {
-        response :response ,
+        response : '',
     }
 }
 </script>
