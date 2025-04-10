@@ -5,6 +5,7 @@ import SignupView from '../views/SignupView.vue'
 import ProfileView from '../views/Profile.vue'
 import DiscussionDetail from '@/components/DiscussionDetail.vue'
 import DiscussionList from '@/components/DiscussionList.vue'
+import NotFoundView from "../views/NotFoundView.vue"
 const routes = [
   {
     path: '/all',
@@ -34,6 +35,15 @@ const routes = [
     path: '/Profile',
     name: 'Profile',
     component: ProfileView
+  },
+  {
+    path: '/404',
+    name: 'Not Found',
+    component: NotFoundView
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404'
   }
 ]
 
