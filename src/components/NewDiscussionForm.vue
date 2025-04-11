@@ -7,6 +7,9 @@
   
         <label>Content :</label>
         <textarea v-model="content" required></textarea>
+
+        <label>Categorie :</label>
+        <input v-model="categorie" required />
   
         <button type="submit">Publish</button>
       </form>
@@ -14,14 +17,15 @@
   </template>
   
   <script>
-  import { db, auth } from "@/firebase";
+  import { db, auth } from "../firebase-config";
   import { collection, addDoc, serverTimestamp } from "firebase/firestore";
   
   export default {
     data() {
       return {
         title: "",
-        content: ""
+        content: "",
+        categorie: ""
       };
     },
     methods: {
@@ -38,6 +42,7 @@
           await addDoc(collection(db, "discussions"), {
             title: this.title,
             content: this.content,
+            categorie: this.categorie,
             authorId: user.uid,
             authorName: user.displayName || "Anonyme",
             createdAt: serverTimestamp()
