@@ -2,6 +2,12 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import {
+  sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
+} from "firebase/auth";
+
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -36,7 +42,7 @@ const registerWithEmailAndPassword = async (email, password) => {
       throw error;
     }
 };
-  
+
 // Function for email/password login
 const loginWithEmailAndPassword = async (email, password) => {
     if (!email || !password) {
@@ -62,5 +68,32 @@ const signInWithGoogle = async () => {
       throw error;
     }
 };
+const sendPasswordReset = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent. Please check your inbox.");
+  } catch (error) {
+    console.error("Error sending password reset email:", error.message);
+    throw error;
+  }
+};
   
-export { db, auth, registerWithEmailAndPassword, loginWithEmailAndPassword, signInWithGoogle };
+// Verifies the token in reset email
+const verifyResetCode = async (oobCode) => {
+  return await verifyPasswordResetCode(auth, oobCode);
+};
+
+// Updates the password
+const confirmReset = async (oobCode, newPassword) => {
+  return await confirmPasswordReset(auth, oobCode, newPassword);
+};
+export {
+  db,
+  auth,
+  registerWithEmailAndPassword,
+  loginWithEmailAndPassword,
+  signInWithGoogle,
+  sendPasswordReset,
+  verifyResetCode,
+  confirmReset
+};
