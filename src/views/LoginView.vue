@@ -120,7 +120,7 @@ h1 {
 label {
   font-weight: 600;
   margin-bottom: 5px;
-  color: #001d5c;
+  color: white;
 }
 
 input {
