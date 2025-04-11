@@ -29,86 +29,75 @@
       </div>
     </div>
   </template>
-  
-  <script>
-  import { db } from '../firebase-config'; 
-  import ResponseList from './ResponseList.vue'; 
-  export default {
-    components: {
-      ResponseList
-    },
-    data() {
-      return {
-        discussion: null, // Discussion récupérée
-        showForm: false,
-        showresponse: false,
-        response: { // Modèle de la réponse
-          date_de_creation: new Date().toISOString(),
-          auteur : '',
-          categorie: '',
-          contenu: ''
-        }
-      };
-    },
-    created() {
-      const discussionId = this.$route.params.id;
-      this.fetchDiscussionDetail(discussionId);
-    },
-    methods: {
-      repondre() {
-        this.showForm = !this.showForm;
-      },
-      afficher() {
-        this.showresponse = !this.showresponse;
-      },
-      submitResponse() {
-        // Soumettre la réponse à Firebase
-        const discussionId = this.$route.params.id;
-  
-        // Référence à la collection "responses"
-        const responsesRef = db.collection('responses');
-  
-        // Ajouter les données de la réponse à la collection "responses"
-        responsesRef.add({
-        id: discussionId, // L'ID de la discussion à laquelle cette réponse appartient
-          date_de_creation: this.response.date_de_creation,
-          auteur: this.response.auteur,
-          categorie: this.response.categorie,
-          contenu: this.response.contenu
-        })
-        .then(() => {
-          console.log('Réponse ajoutée avec succès');
-          this.showForm = false; // Cacher le formulaire après soumission
-          this.clearForm(); // Réinitialiser les champs du formulaire
-        })
-        .catch((error) => {
-          console.error('Erreur lors de l\'ajout de la réponse: ', error);
-        });
-      },
-      clearForm() {
-        this.response = {
-          date_de_creation: '',
-          auteur: '',
-          categorie: '',
-          contenu: ''
-        };
-      },
-      fetchDiscussionDetail(id) {
-        // Récupérer les détails de la discussion depuis la collection "discussions"
-        db.collection('discussions').doc(id).get()
-          .then(doc => {
-            if (doc.exists) {
-              this.discussion = doc.data();
-              this.discussion.id = doc.id; // Ajouter l'ID de la discussion
-            } else {
-              console.log("Aucune discussion trouvée pour cet ID");
-            }
-          })
-          .catch(error => {
-            console.error("Erreur de récupération de la discussion: ", error);
-          });
-      }
-    }
-  };
-  </script>
-  
+ <script>
+ import { db } from '../firebase-config';
+ import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
+ import ResponseList from './ResponseList.vue';
+ 
+ export default {
+   components: {
+     ResponseList
+   },
+   data() {
+     return {
+       discussion: null,
+       showForm: false,
+       showresponse: false,
+       response: {
+         date_de_creation: new Date().toISOString().split("T")[0], // format YYYY-MM-DD
+         auteur: '',
+         categorie: '',
+         contenu: ''
+       }
+     };
+   },
+   created() {
+     const discussionId = this.$route.params.id;
+     this.fetchDiscussionDetail(discussionId);
+   },
+   methods: {
+     repondre() {
+       this.showForm = !this.showForm;
+     },
+     afficher() {
+       this.showresponse = !this.showresponse;
+     },
+     async submitResponse() {
+       const discussionId = this.$route.params.id;
+       try {
+         await addDoc(collection(db, "responses"), {
+           discussionId,
+           ...this.response
+         });
+         console.log("Réponse ajoutée avec succès");
+         this.showForm = false;
+         this.clearForm();
+       } catch (error) {
+         console.error("Erreur lors de l'ajout de la réponse :", error);
+       }
+     },
+     clearForm() {
+       this.response = {
+         date_de_creation: new Date().toISOString().split("T")[0],
+         auteur: '',
+         categorie: '',
+         contenu: ''
+       };
+     },
+     async fetchDiscussionDetail(id) {
+       try {
+         const docRef = doc(db, "discussions", id);
+         const docSnap = await getDoc(docRef);
+         if (docSnap.exists()) {
+           this.discussion = { id: docSnap.id, ...docSnap.data() };
+         } else {
+           console.log("Aucune discussion trouvée");
+         }
+       } catch (error) {
+         console.error("Erreur de récupération :", error);
+       }
+     }
+   }
+ };
+ </script>
+ 
