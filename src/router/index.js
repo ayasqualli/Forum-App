@@ -2,11 +2,23 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
-
-
+import ProfileView from '../views/Profile.vue'
+import DiscussionDetail from '@/components/DiscussionDetail.vue'
+import DiscussionList from '@/components/DiscussionList.vue'
+import NotFoundView from "../views/NotFoundView.vue"
+import NewDiscussion from "@/components/NewDiscussionForm.vue"
 const routes = [
   {
-    path: '/',
+    path: '/all',
+    name: 'Discussionlist',
+    component: DiscussionList,
+  },
+  {
+    path: '/detail/:id', // :id est un paramètre dynamique
+    name: 'DiscussionDetail',
+    component: DiscussionDetail,
+  },
+  {  path: "/",
     name: 'home',
     component: Home
   },
@@ -18,17 +30,37 @@ const routes = [
   {
     path: '/signup',
     name: 'signup',
-    component: () => import(/* webpackChunkName: "signup" */ '../views/SignupView.vue')
+    component: SignupView
   },
-  { path: "/Forgot", 
-    name : 'Forgot',
-    component: () => import(/* webpackChunkName: "signup" */ '../views/ForgotView.vue') 
+  {
+    path: '/Profile',
+    name: 'Profile',
+    component: ProfileView
   },
-  { path: "/reset", 
-    name : 'ResetPassword',
-    component: () => import(/* webpackChunkName: "signup" */ '../views/ResetPassword.vue') 
+  {
+    path: '/404',
+    name: 'Not Found',
+    component: NotFoundView
   },
-
+  {
+    path: "/new-discussion",
+    name: 'New Discussion',
+    component: NewDiscussion
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404'
+  }
+  component: () => import(/* webpackChunkName: "signup" */ '../views/SignupView.vue')
+},
+{ path: "/Forgot", 
+  name : 'Forgot',
+  component: () => import(/* webpackChunkName: "signup" */ '../views/ForgotView.vue') 
+},
+{ path: "/reset", 
+  name : 'ResetPassword',
+  component: () => import(/* webpackChunkName: "signup" */ '../views/ResetPassword.vue') 
+},
 ]
 
 const router = createRouter({

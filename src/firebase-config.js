@@ -42,7 +42,7 @@ const registerWithEmailAndPassword = async (email, password) => {
       throw error;
     }
 };
-  
+
 // Function for email/password login
 const loginWithEmailAndPassword = async (email, password) => {
     if (!email || !password) {
