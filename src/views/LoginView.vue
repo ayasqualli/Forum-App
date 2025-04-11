@@ -8,8 +8,8 @@
             <h1>Log-in</h1>
           </div>
           <div class="form-group">
-            <label>USERNAME</label>
-            <input type="text" v-model="username" required />
+            <label>EMAIL</label>
+            <input type="email" v-model="email" required />
           </div>
           <div class="form-group">
             <label>PASSWORD</label>
@@ -30,20 +30,20 @@
 </template>
 
 <script>
-import { loginWithEmailAndPassword } from "./firebase-config";
+import { loginWithEmailAndPassword } from "../firebase-config";
 
 export default {
   name: 'LoginView',
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
     }
   },
   methods: {
     async loginUser() {
       try {
-        await loginWithEmailAndPassword(this.username, this.password);
+        await loginWithEmailAndPassword(this.email, this.password);
         this.$router.push("/Profile");
       } catch (error) {
         if (error.code === "auth/wrong-password") {

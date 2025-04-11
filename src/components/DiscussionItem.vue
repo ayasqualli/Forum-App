@@ -18,7 +18,7 @@ export default {
             return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
         },
         goToDetail() {
-            this.$router.push({ name: 'DiscussionDetail', params: { id: this.discussion.id } });
+            this.$router.push({ name: 'detail', params: { id: this.discussion.id } });
         },
     },
 };

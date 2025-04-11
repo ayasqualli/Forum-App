@@ -44,7 +44,7 @@
             <label>I read and agree to <span>Terms & Conditions</span></label>
           </div>
 
-          <button type="submit" @click="registerWithEmailAndPassword">CREATE MY ACCOUNT</button>
+          <button type="submit">CREATE MY ACCOUNT</button>
         </form>
       </div>
     </div>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { registerWithEmailAndPassword } from "@/firebase-config";
+import { registerWithEmailAndPassword } from "../firebase-config";
 import { RouterLink } from "vue-router";
 
 export default {
@@ -100,12 +100,16 @@ export default {
       }
       return true;
     },
-    submitForm() {
+    async submitForm() {
       if (!this.validateForm()) return;
       
-      // Here you would typically make an API call to register the user
-      console.log('Form submitted successfully');
-      // this.$router.push('/login'); // Redirect after successful signup
+      try {
+        await registerWithEmailAndPassword(this.email, this.password);
+        alert('Registration successful!');
+        this.$router.push('/login');
+      } catch (error) {
+        alert('Registration failed: ' + error.message);
+      }
     },
   },
 };

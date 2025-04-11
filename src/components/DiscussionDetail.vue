@@ -44,7 +44,7 @@
         showresponse: false,
         response: { // Modèle de la réponse
           date_de_creation: new Date().toISOString(),
-          auteur: '',
+          auteur : '',
           categorie: '',
           contenu: ''
         }
@@ -70,7 +70,7 @@
   
         // Ajouter les données de la réponse à la collection "responses"
         responsesRef.add({
-          discussionId: discussionId, // L'ID de la discussion à laquelle cette réponse appartient
+        id: discussionId, // L'ID de la discussion à laquelle cette réponse appartient
           date_de_creation: this.response.date_de_creation,
           auteur: this.response.auteur,
           categorie: this.response.categorie,
