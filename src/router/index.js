@@ -6,7 +6,7 @@ import ProfileView from '../views/Profile.vue'
 import DiscussionDetail from '@/components/DiscussionDetail.vue'
 import DiscussionList from '@/components/DiscussionList.vue'
 import NotFoundView from "../views/NotFoundView.vue"
-// Import Create New discussion form view here
+import NewDiscussion from "@/components/NewDiscussionForm.vue"
 const routes = [
   {
     path: '/all',
@@ -42,11 +42,11 @@ const routes = [
     name: 'Not Found',
     component: NotFoundView
   },
-  // {
-  //   path: "/new-discussion",
-  //   name: 'New Discussion',
-  //   component: NewDiscussion
-  // },
+  {
+    path: "/new-discussion",
+    name: 'New Discussion',
+    component: NewDiscussion
+  },
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404'
