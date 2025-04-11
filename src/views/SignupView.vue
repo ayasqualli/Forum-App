@@ -48,6 +48,7 @@
         </form>
       </div>
     </div>
+    <div>Sign up with : <img src="/google.jpeg" width="250" length="250" @click="signInWithGoogle" /></div>
     <div class="login-prompt">
       Already have an account?
       <RouterLink to="/login">Sign in</RouterLink>
@@ -56,7 +57,9 @@
 </template>
 
 <script>
-import { registerWithEmailAndPassword } from "../firebase-config";
+import { registerWithEmailAndPassword, db, storage } from "../firebase-config";
+import { ref as storageRef, uploadString, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 import { RouterLink } from "vue-router";
 
 export default {
@@ -84,7 +87,7 @@ export default {
         }
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.profilePicture = e.target.result;
+          this.profilePicture = e.target.result; 
         };
         reader.readAsDataURL(file);
       }
@@ -102,16 +105,37 @@ export default {
     },
     async submitForm() {
       if (!this.validateForm()) return;
-      
+
       try {
-        await registerWithEmailAndPassword(this.email, this.password);
+        // ✅ Step 1: Create user in Firebase Auth
+        const user = await registerWithEmailAndPassword(this.email, this.password);
+
+        // ✅ Step 2: Upload profile picture to Firebase Storage
+        let profilePictureUrl = "";
+        if (this.profilePicture) {
+          const picRef = storageRef(storage, `users/${user.uid}/profile.jpg`);
+          await uploadString(picRef, this.profilePicture, "data_url");
+          profilePictureUrl = await getDownloadURL(picRef);
+        }
+
+        // ✅ Step 3: Create Firestore user document
+        await setDoc(doc(db, "users", user.uid), {
+          name: this.name,
+          username: this.username,
+          email: this.email,
+          profilePicture: profilePictureUrl,
+          createdAt: new Date(),
+        });
+
         alert('Registration successful!');
         this.$router.push('/login');
+
       } catch (error) {
         alert('Registration failed: ' + error.message);
       }
-    },
-  },
+    }
+  }
+  
 };
 </script>
 
