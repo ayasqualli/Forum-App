@@ -9,7 +9,7 @@
     </div>
   </template>
   <script>
-  import { verifyResetCode, confirmReset } from "@/firebase";
+  import { verifyResetCode, confirmReset } from "../firebase-config";
 
 export default {
   data() {

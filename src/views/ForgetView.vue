@@ -9,7 +9,7 @@
   </template>
   
   <script>
-import { sendPasswordReset } from "@/firebase";
+import { sendPasswordReset } from "../firebase-config";
   export default {
     
   data() {

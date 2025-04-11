@@ -3,52 +3,52 @@
     <div class="page-container"></div>
     <div class="flexy">
       <div class="form-container">
-      <form @submit.prevent="submitForm" class="form">
-        <div class="title">
-          <h1>Sign up</h1>
-        </div>
+        <form @submit.prevent="submitForm" class="form">
+          <div class="title">
+            <h1>Sign up</h1>
+          </div>
 
-        <div class="form-group">
-          <label>NAME</label>
-          <input type="text" v-model="name" />
-        </div>
+          <div class="form-group">
+            <label>NAME</label>
+            <input type="text" v-model="name" required />
+          </div>
 
-        <div class="form-group">
-          <label>USERNAME</label>
-          <input type="text" v-model="username" />
-        </div>
+          <div class="form-group">
+            <label>USERNAME</label>
+            <input type="text" v-model="username" required />
+          </div>
 
-        <div class="form-group">
-          <label>PASSWORD</label>
-          <input type="password" v-model="password" />
-        </div>
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input type="password" v-model="password" required minlength="8" />
+          </div>
 
-        <div class="form-group">
-          <label>EMAIL</label>
-          <input type="email" v-model="email" />
-        </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" v-model="email" required />
+          </div>
 
-        <div class="form-group">
-          <label>PROFILE PICTURE</label>
-          <input type="file" @change="handleImageUpload" />
-          <img
-            v-if="profilePicture"
-            :src="profilePicture"
-            alt="Preview"
-            style="max-width: 200px; margin-top: 10px"
-          />
-        </div>
+          <div class="form-group">
+            <label>PROFILE PICTURE</label>
+            <input type="file" @change="handleImageUpload" accept="image/*" />
+            <img
+              v-if="profilePicture"
+              :src="profilePicture"
+              alt="Preview"
+              class="image-preview"
+            />
+          </div>
 
-        <div class="terms">
-          <input type="checkbox" v-model="agreeToTerms" />
-          <label>I read and agree to <span>Terms & Conditions</span></label>
-        </div>
+          <div class="terms">
+            <input type="checkbox" v-model="agreeToTerms" required />
+            <label>I read and agree to <span>Terms & Conditions</span></label>
+          </div>
 
-        <button type="submit">CREATE MY ACCOUNT</button>
-      </form>
+          <button type="submit" @click="registerWithEmailAndPassword">CREATE MY ACCOUNT</button>
+        </form>
+      </div>
     </div>
-    </div>
-    <div>
+    <div class="login-prompt">
       Already have an account?
       <RouterLink to="/login">Sign in</RouterLink>
     </div>
@@ -56,11 +56,14 @@
 </template>
 
 <script>
+import { registerWithEmailAndPassword } from "@/firebase-config";
 import { RouterLink } from "vue-router";
 
 export default {
-  name: "signup",
-  components: {},
+  name: "SignupView",
+  components: {
+    RouterLink
+  },
   data() {
     return {
       name: "",
@@ -75,6 +78,10 @@ export default {
     handleImageUpload(event) {
       const file = event.target.files[0];
       if (file) {
+        if (!file.type.startsWith('image/')) {
+          alert('Please upload an image file');
+          return;
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
           this.profilePicture = e.target.result;
@@ -82,19 +89,31 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    submitForm() {
-      if (!this.agreeToTerms) {
-        alert("You must agree to the terms and conditions.");
-        return;
+    validateForm() {
+      if (!this.name || !this.username || !this.email || !this.password) {
+        alert('Please fill in all required fields');
+        return false;
       }
+      if (!this.agreeToTerms) {
+        alert('You must agree to the terms and conditions.');
+        return false;
+      }
+      return true;
+    },
+    submitForm() {
+      if (!this.validateForm()) return;
+      
+      // Here you would typically make an API call to register the user
+      console.log('Form submitted successfully');
+      // this.$router.push('/login'); // Redirect after successful signup
     },
   },
 };
 </script>
 
 <style scoped>
-.bigbro{
-    overflow: hidden;
+.bigbro {
+  overflow: hidden;
 }
 
 .page-container {
@@ -107,7 +126,7 @@ export default {
   background: linear-gradient(to right, #003f5c, #58508d, #bc5090);
 }
 
-.flexy{
+.flexy {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -150,7 +169,9 @@ h1 {
   color: #ffffff;
   letter-spacing: -1px;
   margin-bottom: 20px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);}
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -189,17 +210,39 @@ button {
   font-weight: 600;
   color: white;
   background-color: #58508d;
+  cursor: pointer;
 }
+
 button:hover {
   background-color: #bc5090;
   transform: translateY(-2px) scale(1.05);
   transition: transform 0.2s ease;
 }
 
-.terms{
+.terms {
   display: flex;
   flex-direction: row;
-  align-self:center;
+  align-self: center;
   margin-bottom: 10px;
+}
+
+.image-preview {
+  max-width: 200px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.login-prompt {
+  margin-top: 20px;
+  color: white;
+}
+
+.login-prompt a {
+  color: #bc5090;
+  text-decoration: none;
+}
+
+.login-prompt a:hover {
+  text-decoration: underline;
 }
 </style>

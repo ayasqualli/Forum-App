@@ -50,17 +50,22 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404'
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignupView
+  },
+  {
+    path: '/Forgot',
+    name: 'Forgot',
+    component: () => import(/* webpackChunkName: "forgot" */ '../views/ForgotView.vue')
+  },
+  {
+    path: '/reset',
+    name: 'ResetPassword', 
+    component: () => import(/* webpackChunkName: "reset" */ '../views/ResetPassword.vue')
   }
-  component: () => import(/* webpackChunkName: "signup" */ '../views/SignupView.vue')
-},
-{ path: "/Forgot", 
-  name : 'Forgot',
-  component: () => import(/* webpackChunkName: "signup" */ '../views/ForgotView.vue') 
-},
-{ path: "/reset", 
-  name : 'ResetPassword',
-  component: () => import(/* webpackChunkName: "signup" */ '../views/ResetPassword.vue') 
-},
 ]
 
 const router = createRouter({
