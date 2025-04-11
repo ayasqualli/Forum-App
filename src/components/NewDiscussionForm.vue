@@ -7,6 +7,9 @@
   
         <label>Content :</label>
         <textarea v-model="content" required></textarea>
+
+        <label>Categorie :</label>
+        <input v-model="categorie" required />
   
         <button type="submit">Publish</button>
       </form>
@@ -21,7 +24,8 @@
     data() {
       return {
         title: "",
-        content: ""
+        content: "",
+        categorie: ""
       };
     },
     methods: {
@@ -36,6 +40,9 @@
   
         try {
           await addDoc(collection(db, "discussions"), {
+
+           
+
             date_de_creation: new Date().toISOString(),
             categorie: '',
             titre: this.title,
