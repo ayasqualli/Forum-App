@@ -1,10 +1,11 @@
 <template>
-    <div @click="goToDetail">
+    <div>
         <div>{{ discussion.titre }}</div>
         <div>{{ discussion.date_de_creation }}</div>
         <div>{{ discussion.auteur }}</div>
         <div>{{ getExcerpt(discussion.contenu) }}</div>
     </div>
+    <button @click="goToDetail">Afficher plus de détails</button>
 </template>
 <script>
 export default {
@@ -13,10 +14,11 @@ export default {
         discussion: Object, 
     },
     methods: {
-        getExcerpt(text) {
-            const maxLength = 100; 
-            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-        },
+        getExcerpt() {
+  return this.discussion && this.discussion.contenu
+    ? this.discussion.contenu.slice(0, 100) + '...'
+    : '';
+},
         goToDetail() {
             this.$router.push({ name: 'detail', params: { id: this.discussion.id } });
         },

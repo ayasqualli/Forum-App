@@ -14,8 +14,8 @@ const routes = [
     component: DiscussionList,
   },
   {
-    path: '/detail/:id', // :id est un paramètre dynamique
-    name: 'DiscussionDetail',
+    path: '/discussion/:id', // :id est un paramètre dynamique
+    name: 'detail',
     component: DiscussionDetail,
   },
   {  path: "/",
