@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div>
-      <div v-for="(response, index) in responses" :key="index" class="response-item">
+    <div v-if="responses.length === 0" class="no-responses">
+      Aucune réponse pour le moment.
+    </div>
+    <div v-else>
+      <div v-for="response in responses" :key="response.documentId" class="response-item">
         <h4>{{ response.auteur }} - {{ response.date_de_creation }}</h4>
         <p><strong>Catégorie :</strong> {{ response.categorie }}</p>
         <p>{{ response.contenu }}</p>
@@ -12,8 +15,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import { db } from '@/firebase-config';
+import { ref, onMounted, watch } from 'vue';
+import { db } from '../firebase-config';
 import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 
 export default {
@@ -21,23 +24,25 @@ export default {
     discussionId: {
       type: String,
       required: true
+    },
+    newResponse: {
+      type: Object,
+      default: null
     }
   },
   setup(props) {
     const responses = ref([]);
 
+    const addResponse = (response) => {
+      if (response) {
+        responses.value = [response, ...responses.value];
+      }
+    };
+
     const fetchResponses = async () => {
       try {
-        console.log("Fetching responses for discussionId:", props.discussionId);
-        console.log("Type of discussionId:", typeof props.discussionId);
+        console.log("Fetching responses for discussion document ID:", props.discussionId);
         
-        // First, let's check all responses in the collection
-        const allResponses = await getDocs(collection(db, "responses"));
-        console.log("All responses in collection:", allResponses.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })));
-
         const q = query(
           collection(db, "responses"),
           where("discussionId", "==", props.discussionId)
@@ -45,16 +50,12 @@ export default {
 
         const querySnapshot = await getDocs(q);
         console.log("Found responses:", querySnapshot.docs.length);
-        console.log("Query results:", querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })));
         
         responses.value = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          console.log("Response data:", data);
           return {
-            id: doc.id,
+            documentId: doc.id,
+            authorId: data.authorId,
             ...data
           };
         });
@@ -63,32 +64,42 @@ export default {
       }
     };
 
+    // Watch for new responses from parent
+    watch(() => props.newResponse, (newVal) => {
+      if (newVal) {
+        addResponse(newVal);
+      }
+    });
+
     // Set up real-time listener
     onMounted(() => {
-      console.log("ResponseList mounted with discussionId:", props.discussionId);
-      console.log("Type of discussionId:", typeof props.discussionId);
-      
+      if (!props.discussionId) {
+        console.error("No discussionId provided");
+        return;
+      }
+
+      console.log("Setting up real-time listener for discussion:", props.discussionId);
       const q = query(
         collection(db, "responses"),
         where("discussionId", "==", props.discussionId)
       );
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        console.log("Real-time update received. Number of responses:", snapshot.docs.length);
-        console.log("Query results:", snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })));
-        
+        console.log("Real-time update received, responses count:", snapshot.docs.length);
         responses.value = snapshot.docs.map(doc => {
           const data = doc.data();
-          console.log("Response data:", data);
           return {
-            id: doc.id,
+            documentId: doc.id,
+            authorId: data.authorId,
             ...data
           };
         });
+      }, (error) => {
+        console.error("Error in real-time listener:", error);
       });
+
+      // Initial fetch
+      fetchResponses();
 
       // Clean up listener when component is unmounted
       return () => unsubscribe();

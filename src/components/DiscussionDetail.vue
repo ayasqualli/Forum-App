@@ -28,7 +28,7 @@
     </form>
 
     <h3>Réponses :</h3>
-    <ResponseList :discussionId="discussion.id" ref="responseList" />
+    <ResponseList :discussionId="discussion.id" />
   </div>
 
   <div v-else>
@@ -48,6 +48,7 @@ export default {
   data() {
     return {
       discussion: null,
+  
       showForm: false,
       showresponse: false,
       response: {
@@ -73,15 +74,16 @@ export default {
     async submitResponse() {
       const discussionId = this.$route.params.id;
       try {
-        await addDoc(collection(db, "responses"), {
+        const newResponse = {
           discussionId,
           ...this.response
-        });
+        };
+        console.log("Submitting response:", newResponse);
+        
+        await addDoc(collection(db, "responses"), newResponse);
         console.log("Réponse ajoutée avec succès");
         this.showForm = false;
         this.clearForm();
-        // Refresh the responses list
-        this.$refs.responseList.refreshResponses();
       } catch (error) {
         console.error("Erreur lors de l'ajout de la réponse :", error);
       }
@@ -100,8 +102,12 @@ export default {
         const docRef = doc(db, "discussions", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          this.discussion = { id: docSnap.id, ...docSnap.data() };
-          console.log("Discussion data:", this.discussion);
+          const data = docSnap.data();
+          this.discussion = { 
+            id: docSnap.id,
+            ...data
+          };
+          console.log("Discussion loaded:", this.discussion);
         } else {
           console.log("Aucune discussion trouvée");
         }

@@ -28,17 +28,6 @@
             <input type="email" v-model="email" required />
           </div>
 
-          <div class="form-group">
-            <label>PROFILE PICTURE</label>
-            <input type="file" @change="handleImageUpload" accept="image/*" />
-            <img
-              v-if="profilePicture"
-              :src="profilePicture"
-              alt="Preview"
-              class="image-preview"
-            />
-          </div>
-
           <div class="terms">
             <input type="checkbox" v-model="agreeToTerms" required />
             <label>I read and agree to <span>Terms & Conditions</span></label>
@@ -57,8 +46,7 @@
 </template>
 
 <script>
-import { registerWithEmailAndPassword, db, storage } from "../firebase-config";
-import { ref as storageRef, uploadString, getDownloadURL } from "firebase/storage";
+import { registerWithEmailAndPassword, db } from "../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
 import { RouterLink } from "vue-router";
 
@@ -72,26 +60,11 @@ export default {
       name: "",
       username: "",
       email: "",
-      profilePicture: "",
       password: "",
       agreeToTerms: false,
     };
   },
   methods: {
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        if (!file.type.startsWith('image/')) {
-          alert('Please upload an image file');
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.profilePicture = e.target.result; 
-        };
-        reader.readAsDataURL(file);
-      }
-    },
     validateForm() {
       if (!this.name || !this.username || !this.email || !this.password) {
         alert('Please fill in all required fields');
@@ -107,23 +80,14 @@ export default {
       if (!this.validateForm()) return;
 
       try {
-        // ✅ Step 1: Create user in Firebase Auth
+        // Create user in Firebase Auth
         const user = await registerWithEmailAndPassword(this.email, this.password);
 
-        // ✅ Step 2: Upload profile picture to Firebase Storage
-        let profilePictureUrl = "";
-        if (this.profilePicture) {
-          const picRef = storageRef(storage, `users/${user.uid}/profile.jpg`);
-          await uploadString(picRef, this.profilePicture, "data_url");
-          profilePictureUrl = await getDownloadURL(picRef);
-        }
-
-        // ✅ Step 3: Create Firestore user document
+        // Create Firestore user document
         await setDoc(doc(db, "users", user.uid), {
           name: this.name,
           username: this.username,
           email: this.email,
-          profilePicture: profilePictureUrl,
           createdAt: new Date(),
         });
 
@@ -135,7 +99,6 @@ export default {
       }
     }
   }
-  
 };
 </script>
 
@@ -252,12 +215,6 @@ button:hover {
   flex-direction: row;
   align-self: center;
   margin-bottom: 10px;
-}
-
-.image-preview {
-  max-width: 200px;
-  margin-top: 10px;
-  border-radius: 4px;
 }
 
 .login-prompt {
