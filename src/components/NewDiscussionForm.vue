@@ -40,8 +40,11 @@
   
         try {
           await addDoc(collection(db, "discussions"), {
+
+           
+
             date_de_creation: new Date().toISOString(),
-            categorie: '',
+            categorie: this.categorie,
             titre: this.title,
             contenu: this.content,
             id: user.uid,

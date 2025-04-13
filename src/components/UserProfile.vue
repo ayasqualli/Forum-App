@@ -50,6 +50,7 @@ export default {
         const docRef = doc(db, "users", user.uid);
         await updateDoc(docRef, this.userData);
         alert("Updated Profile");
+        this.$router.push("/");
       }
     }
   }
