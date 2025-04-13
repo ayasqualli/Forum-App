@@ -51,7 +51,7 @@ const routes = [
   {
     path: "/new-response",
     name: 'New Response',
-    component: NewDiscussion
+    component: NewResponseForm
   },
   {
     path: '/:pathMatch(.*)*',
