@@ -3,43 +3,57 @@
       <textarea v-model="content" placeholder="Write your response..." required></textarea>
       <button type="submit">Post Response</button>
     </form>
-  </template>
+</template>
   
-  <script>
+<script>
+  import { db, auth } from "../firebase-config";
+  import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+  
   export default {
+    name: "NewResponseForm",
+    props: {
+      discussionId: {
+        type: String,
+        required: true
+      }
+    },
     data() {
       return {
         content: ""
       };
     },
-    props: {
-      postId: String 
-    },
     methods: {
-        submitResponse() {
-            const user = auth.currentUser;
-
-            if (!user) {
-                alert("You must be logged in to respond.");
-                this.$router.push("/login");
-                return;
-            }
-
-            const response = {
-                content: this.content,
-                postId: this.postId,
-                createdAt: new Date().toISOString(),
-                userId: user.uid,
-                email: user.email,
-                author: user.displayName || "Anonyme"
-            };
-
-            this.$emit("new-response", response);
-            this.content = "";
+      async submitResponse() {
+        const user = auth.currentUser;
+  
+        if (!user) {
+            alert("You have to be logged in to respond.");
+            this.$router.push("/login");
+            return;
         }
+  
+        try {
+          await addDoc(collection(db, "responses"), {
+
+            date_de_creation: new Date().toISOString(),
+            discussionId: this.discussionId,
+            contenu: this.content,
+            id: user.uid,
+            auteur: user.displayName || "Anonyme",
+            createdAt: serverTimestamp()
+          });
+          alert("Response created !");
+          this.content = "";
+          this.$router.push("/");
+        } catch (error) {
+          console.error("Error :", error);
+          alert("Error!");
+        }
+      }
     }
   };
   </script>
+
   
   <style scoped>
   textarea {
