@@ -17,7 +17,7 @@
   </template>
   
   <script>
-  import { db, auth } from "@/firebase";
+  import { db, auth } from "../firebase-config";
   import { doc, getDoc, updateDoc } from "firebase/firestore";
   
   export default {
