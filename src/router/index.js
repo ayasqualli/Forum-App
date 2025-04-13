@@ -7,6 +7,7 @@ import DiscussionDetail from '@/components/DiscussionDetail.vue'
 import DiscussionList from '@/components/DiscussionList.vue'
 import NotFoundView from "../views/NotFoundView.vue"
 import NewDiscussion from "@/components/NewDiscussionForm.vue"
+import NewResponseForm from '@/components/NewResponseForm.vue'
 const routes = [
   {
     path: '/all',
@@ -45,6 +46,11 @@ const routes = [
   {
     path: "/new-discussion",
     name: 'New Discussion',
+    component: NewDiscussion
+  },
+  {
+    path: "/new-response",
+    name: 'New Response',
     component: NewDiscussion
   },
   {
