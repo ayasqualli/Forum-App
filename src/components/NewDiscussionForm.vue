@@ -3,10 +3,10 @@
       <h2>New discussion</h2>
       <form @submit.prevent="submitDiscussion">
         <label>Title :</label>
-        <input v-model="title" required />
+        <input v-model="titre" required />
   
         <label>Content :</label>
-        <textarea v-model="content" required></textarea>
+        <textarea v-model="contenu" required></textarea>
 
         <label>Categorie :</label>
         <input v-model="categorie" required />
@@ -23,8 +23,8 @@
   export default {
     data() {
       return {
-        title: "",
-        content: "",
+        titre: "",
+        contenu: "",
         categorie: ""
       };
     },
@@ -40,16 +40,16 @@
   
         try {
           await addDoc(collection(db, "discussions"), {
-            title: this.title,
-            content: this.content,
+            titre: this.titre,
+            contenu: this.contenu,
             categorie: this.categorie,
-            authorId: user.uid,
-            authorName: user.displayName || "Anonyme",
+            id: user.id,
+            auteur: user.auteur || "Anonyme",
             createdAt: serverTimestamp()
           });
           alert("Discussion created !");
-          this.title = "";
-          this.content = "";
+          this.titre = "";
+          this.contenu = "";
           this.$router.push("/");
         } catch (error) {
           console.error("Error :", error);
@@ -59,5 +59,3 @@
     }
   };
   </script>
-
-  
