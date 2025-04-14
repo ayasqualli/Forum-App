@@ -28,7 +28,7 @@
     </form>
 
     <h3>Réponses :</h3>
-    <ResponseList :discussionId="discussion.id" />
+    <ResponseList :discussionId="discussion.discussionId" />
   </div>
 
   <div v-else>
@@ -60,7 +60,12 @@ export default {
     };
   },
   created() {
-    const discussionId = this.$route.params.id;
+    const discussionId = this.$route.params.id || this.discussion?.discussionId;
+    if (!discussionId) {
+      console.error("No discussion ID found in route parameters or document");
+      this.$router.push('/');
+      return;
+    }
     console.log("ID de la discussion :", discussionId); // 🔍 Debug
     this.fetchDiscussionDetail(discussionId);
   },
