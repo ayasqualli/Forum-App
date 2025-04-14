@@ -40,11 +40,12 @@
   
         try {
           await addDoc(collection(db, "discussions"), {
-            titre: this.titre,
-            contenu: this.contenu,
+            date_de_creation: new Date().toISOString(),
             categorie: this.categorie,
-            id: user.id,
-            auteur: user.auteur || "Anonyme",
+            titre: this.title,
+            contenu: this.content,
+            id: user.uid,
+            auteur: user.displayName || "Anonyme",
             createdAt: serverTimestamp()
           });
           alert("Discussion created !");
