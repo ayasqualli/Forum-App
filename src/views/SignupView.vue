@@ -81,7 +81,7 @@ export default {
 
       try {
         // Create user in Firebase Auth
-        const user = await registerWithEmailAndPassword(this.email, this.password);
+        const user = await registerWithEmailAndPassword(this.email, this.password, this.username);
 
         // Create Firestore user document
         await setDoc(doc(db, "users", user.uid), {

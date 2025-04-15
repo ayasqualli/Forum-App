@@ -31,6 +31,8 @@
 
 <script>
 import { loginWithEmailAndPassword } from "../firebase-config";
+import {auth, db} from "../firebase-config";
+import { doc, getDoc } from "firebase/firestore"; // make sure you imported these at the top
 
 export default {
   name: 'LoginView',
@@ -44,8 +46,16 @@ export default {
     async loginUser() {
       console.log('Attempting to login with email:', this.email);
       try {
-        const userCredential = await loginWithEmailAndPassword(this.email, this.password);
-        console.log('Login successful, user:', userCredential.user);
+         await loginWithEmailAndPassword(this.email, this.password);
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          console.log("Login successful, user:", userDocSnap.data().username);
+        } else {
+          console.log("No such user document found.");
+        }
+
         this.$router.push("/Profile");
       } catch (error) {
         console.error('Login error:', error);
