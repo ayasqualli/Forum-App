@@ -97,7 +97,7 @@ export default {
   height: 120%;
   top: -10%;
   left: -10%;
-  background-color: rgb(243, 151, 149);
+  background-color: rgb(255, 189, 186);
 }
 
 .flex-container {
@@ -126,7 +126,7 @@ export default {
 }
 
 .form {
-  width: 100%;
+  width: 60%;
 }
 
 h1 {
@@ -141,8 +141,42 @@ h1 {
 }
 
 .form-group {
-  margin: 5px 0; 
+  margin: 20px 0; 
   padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+label{
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: rgb(255, 255, 255, 0.8);
+  transition: border-color 0.3s ease-in-out;
+}
+
+input:focus{
+  outline: none;
+  border-color: #ff6361;
+  box-shadow: 0 0 10px #dc5654;
+}
+
+button{
+  height: fit-content;
+  width: 150px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  background-color: 
 }
 
 </style>
