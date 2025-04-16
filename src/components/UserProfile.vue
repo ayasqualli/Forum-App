@@ -15,10 +15,10 @@
     </form>
   </div>
 </template>
-
 <script>
 import { db, auth } from "../firebase-config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default {
   data() {
@@ -31,25 +31,35 @@ export default {
     };
   },
   created() {
-    this.fetchUserData();
+    this.waitForUser();
   },
   methods: {
-    async fetchUserData() {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          this.userData = docSnap.data();
+    waitForUser() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            this.userData = {
+              ...docSnap.data(),
+              email: user.email, // just in case it's not in Firestore
+            };
+          }
+        } else {
+          console.warn("User not logged in.");
+          this.$router.push("/login");
         }
-      }
+      });
     },
     async updateProfile() {
       const user = auth.currentUser;
       if (user) {
         const docRef = doc(db, "users", user.uid);
-        await updateDoc(docRef, this.userData);
-        alert("Updated Profile");
+        await updateDoc(docRef, {
+          name: this.userData.name,
+          bio: this.userData.bio,
+        });
+        alert("Profile updated.");
         this.$router.push("/");
       }
     }

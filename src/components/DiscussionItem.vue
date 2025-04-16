@@ -20,7 +20,7 @@ export default {
     : '';
 },
         goToDetail() {
-            this.$router.push({ name: 'detail', params: { id: this.discussion.id } });
+            this.$router.push({ name: 'detail', params: { id: this.discussion.discussionId } });
         },
     },
 };
